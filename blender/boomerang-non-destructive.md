@@ -25,3 +25,6 @@
    * Add Subdivision Surface modifier
       * Check "On Cage" to see original topology
       * Crease edge loops in Properties panel as desired
+   * Export to STL
+      * Use "only selection" option
+      * Set a scale of 1000 to export in correct size
