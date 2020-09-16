@@ -1,6 +1,6 @@
 # 3d-boomerang
 
-Experiments making a 3d printable boomerang in FreeCAD, Blender and possibly others.
+Experiments making 3d printable boomerangs in FreeCAD, Blender, and possibly others.
 
 There are also boomerang models available in Onshape and Fusion 360, but those live in the cloud:
 
