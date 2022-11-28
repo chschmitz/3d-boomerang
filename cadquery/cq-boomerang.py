@@ -1,6 +1,19 @@
 import cadquery as cq
 
-s1 = (
+THICKNESS = 4
+TRAILING_EDGE = 1.5
+
+TIP_RADIUS = 30
+INNER_RADIUS = 25
+OUTER_RADIUS = 60
+
+TOP_TIP_RADIUS = 20
+TOP_INNER_RADIUS = 20
+TOP_OUTER_RADIUS = 55
+
+FILLET = 2
+
+outline = (
     cq.Sketch()
     .arc((-10, -10), (0, 0), (10, -10), "ie")       # inner elbow
     .segment((10, -10), (150, -200), "ri")            # right wing inner
@@ -26,15 +39,15 @@ s1 = (
     .constrain("lo", "lt", "Angle", 0)
     .constrain("lt", "li", "Angle", 0)
     .constrain("li", "ie", "Angle", 0)
-    .constrain("lt", "Radius", 30)
-    .constrain("rt", "Radius", 30)
-    .constrain("ie", "Radius", 10)
-    .constrain("oe", "Radius", 50)
+    .constrain("lt", "Radius", TIP_RADIUS)
+    .constrain("rt", "Radius", TIP_RADIUS)
+    .constrain("ie", "Radius", INNER_RADIUS)
+    .constrain("oe", "Radius", OUTER_RADIUS)
     .solve()
     .assemble()
 )
 
-s2 = (
+top_outline = (
     cq.Sketch()
     .arc((-10, -10), (0, 0), (10, -10), "ie")       # inner elbow
     .segment((10, -10), (170, -180), "ri")            # right wing inner
@@ -60,17 +73,18 @@ s2 = (
     .constrain("lo", "lt", "Angle", 0)
     .constrain("lt", "li", "Angle", 0)
     .constrain("li", "ie", "Angle", 0)
-    .constrain("lt", "Radius", 20)
-    .constrain("rt", "Radius", 20)
-    .constrain("ie", "Radius", 10)
-    .constrain("oe", "Radius", 50)
+    .constrain("lt", "Radius", TOP_TIP_RADIUS)
+    .constrain("rt", "Radius", TOP_TIP_RADIUS)
+    .constrain("ie", "Radius", TOP_INNER_RADIUS)
+    .constrain("oe", "Radius", TOP_OUTER_RADIUS)
     .solve()
     .assemble()
 )
 
-result = (cq.Workplane()
-    .placeSketch(s1, s2.moved(cq.Location(cq.Vector(0, 0, 10))))
-    .loft().faces("+Z").fillet(5))
+top = (cq.Workplane()
+     .placeSketch(outline.moved(cq.Location(cq.Vector(0, 0, TRAILING_EDGE))), 
+                  top_outline.moved(cq.Location(cq.Vector(0, 0, THICKNESS))))
+     .loft().faces("+Z").fillet(FILLET))
+bottom = (cq.Workplane().placeSketch(outline).extrude(TRAILING_EDGE))
+result = top.union(bottom)
 
-#show_object(s1)
-#show_object(s2)
